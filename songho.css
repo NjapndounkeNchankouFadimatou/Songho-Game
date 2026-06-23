@@ -1,0 +1,131 @@
+  @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&family=Lora:ital,wght@0,400;0,600;1,400&display=swap');
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --gold:        #c9942a;
+  --gold-light:  #e8c068;
+  --gold-dim:    #7a5618;
+  --bg:          #1a1209;
+  --surface:     #2b1d0eee;
+  --surface-alt: #3a2512dd;
+  --border:      #6b4226;
+  --nord-bg:     #1c2e40ee;
+  --nord-hover:  #26435c;
+  --sud-bg:      #3d1f0eee;
+  --sud-hover:   #5a2e12;
+  --text:        #f0ddb0;
+  --text-dim:    #9a7a50;
+  --capture:     #5ec95e;
+  --danger:      #c94040;
+  --radius:      10px;
+  --shadow:      0 4px 20px rgba(0,0,0,0.6);
+}
+  
+  /*============================================================
+                                ACCUEIL
+    ============================================================ */
+
+html, body { min-height: 100vh; }
+body{
+    background-color: var(--text);
+    background-image: url(./Images/background_songho_image.png);
+    background-size: cover;
+}
+
+.home-logo { 
+    width: 120px;
+    height: 120px; 
+    margin-left: 170px; 
+}
+
+#accueil{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 40px 20px;
+
+
+}
+ h1 {
+  font-family: 'Cinzel', serif;
+  font-size: clamp(2.0rem, 8vw, 4.0rem);
+  font-weight: 900;
+  letter-spacing: 0.2em;
+  color: var(--gold);
+  text-shadow: 0 0 40px rgba(201,148,42,0.6), 0 2px 8px rgba(0,0,0,0.9);
+  text-transform: uppercase;
+}
+
+.subtitle {
+  font-size: 1.2rem;
+  color: var(--text-dim);
+  letter-spacing: 0.12em;
+  font-style: italic;
+  max-width: 480px;
+}
+
+.btn-play {
+  font-family: 'Cinzel', serif;
+  font-size: 1rem;
+  font-weight: 900;
+  margin-top: 0.5rem;
+  letter-spacing: 0.2rem;
+  text-transform: uppercase;
+  background: var(--gold);
+  color: var(--bg);
+  border: none;
+  border-radius: 10px;
+  padding: 10px 35px;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.15s, box-shadow 0.2s;
+  box-shadow: 0 6px 24px rgba(201,148,42,0.4);
+}
+
+#zone-section{
+    display: flex;
+    gap: 12rem;
+    align-items: center;
+    margin-block: 5px;
+}
+
+#zone-section p{
+    border: 3px solid var(--gold-light);
+    border-radius: 10px;
+    background-color: var(--border);
+    height: 6rem;
+    padding: 1.0rem;
+    padding-top:1.8rem;
+    font-size: 1.7rem;
+    color: var(--text-dim);
+    letter-spacing: 0rem;
+    box-shadow: inset 4px 4px 8px rgba(0, 0, 0, 0.25);
+
+}
+
+form{
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+input{
+    width: 100%;
+    padding: 10px 15px;
+    border: 2px solid var(--gold);
+    border-radius: 8px;
+    font-size: 16px;
+    outline: none;
+    transition: border-color 0.3s;
+    background-color: var(--border);
+    box-shadow: inset 0 4px 8px rgba(0, 0, 0, 0.25);
+}
+input:focus {
+    border-color: var(--gold-light);   /* bordure verte */
+    box-shadow: 0 0 8px #e8c068;
+}
+.header{
+    display: flex;
+    flex-direction: column;
+}
