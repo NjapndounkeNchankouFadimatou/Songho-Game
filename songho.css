@@ -46,7 +46,7 @@ body{
     align-items: center;
     text-align: center;
     padding: 40px 20px;
-
+    margin-block: 50px;
 
 }
  h1 {
@@ -84,6 +84,12 @@ body{
   box-shadow: 0 6px 24px rgba(201,148,42,0.4);
 }
 
+.btn-play:hover {
+  background: var(--gold-light);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 30px rgba(201,148,42,0.55);
+}
+
 #zone-section{
     display: flex;
     gap: 12rem;
@@ -105,7 +111,13 @@ body{
 
 }
 
-form{
+#zone-section p:hover {
+  border-color: var(--gold-light);
+  transform: translateY(-2px);
+  box-shadow: 0 3px 10px rgba(201,148,42,0.55);
+}
+
+.input_zone{
     display: flex;
     flex-direction: column;
     gap: 5px;
@@ -129,3 +141,100 @@ input:focus {
     display: flex;
     flex-direction: column;
 }
+
+
+
+  /*============================================================
+                                GAME-PAGE
+    ============================================================ */
+header{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1.2rem;
+    margin-top: 30px;
+}
+
+header .home-logo { 
+    width: 80px;
+    height: 80px; 
+
+}
+
+ h1 {
+  font-family: 'Cinzel', serif;
+  font-size: clamp(1.0rem, 4vw, 2.0rem); /*clamp(valeur_minimale, valeur_idéale, valeur_maximale)*/
+  font-weight: 900;
+  letter-spacing: 0.2em;
+  color: var(--gold);
+  text-shadow: 0 0 40px rgba(201,148,42,0.6), 0 2px 8px rgba(0,0,0,0.9);
+  text-transform: uppercase;
+}
+
+button{
+  font-family: 'Cinzel', serif;
+  font-size: 12px;
+  font-weight: 900;
+  margin-top: 0.5rem;
+  letter-spacing: 0.12rem;
+  text-transform: uppercase;
+  background: var(--gold);
+  color: var(--bg);
+  border: none;
+  border-radius: 10px;
+  padding: 10px 35px;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.15s, box-shadow 0.2s;
+  box-shadow: 0 6px 24px rgba(201,148,42,0.4);
+}
+
+button:hover {
+  background: var(--gold-light);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 30px rgba(201,148,42,0.55);
+}
+
+.table{
+ display: flex;
+ align-items: center;
+ justify-content: center;
+ border: 1px solid blue;
+ margin-top: 6rem;
+ 
+}
+.zone-stat{
+    width: 6rem;
+    border: 1px solid black;
+    height: 20em;
+    margin-block: 1rem;
+}
+#plateau{
+    border: 1px solid black;
+    height: 20rem;
+    width: 50rem;
+    margin:1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.4rem;
+    padding: 20px;
+    background-color: var(--gold-dim);
+}
+
+.North{
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    gap: 0.5rem;
+    height: 10rem;
+    border: 1px solid black;
+    border-radius: 2rem;
+}
+
+.circle {
+    width: 4.5rem;
+    height: 4.5rem;
+    border-radius: 50%;
+    background-color: brown; /* couleur des graines */
+    border: 1px solid black;
+}
+

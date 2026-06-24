@@ -22,15 +22,26 @@
                 <p>North</p>
                 <p>South</p>
             </div>
-            <form action="" method="">
-                <label for="name"></label>
-                <input type="text" id="name" placeholder="Enter your name">
-                <label for="zone"></label>
-                <input type="text" id="zone" placeholder="Enter your choosen zone">
-            </form>
-            <button class="btn-play">Start Game</button>
+            <div class="input_zone">
+            <input type="text" id="name" placeholder="Enter your name">
+            <input type="text" id="zone" placeholder="Enter your choosen zone">
+            <button class="btn-play" onclick="startGame()">Start Game</button>
+            </div>
         </div>
     </section>
 
+<script>
+    function startGame() { // fonction pour recuperer les valeurs entree
+    const name = document.getElementById('name').value;
+    const zone = document.getElementById('zone').value;
+
+    if (name === "" || zone === "") {
+        alert("Enter all the information !");
+        return; // bloque la redirection
+    }
+
+    window.location.href = `game_page.html?name=${name}&zone=${zone}`; //recupere les valeurs entree pour les passer dans l'autre page 
+}
+</script>
 </body>
 </html>
