@@ -2,6 +2,9 @@
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
+body{
+    overflow-y:hidden ;
+}
 :root {
   --gold:        #c9942a;
   --gold-light:  #e8c068;
@@ -28,27 +31,30 @@
 
 html, body { min-height: 100vh; }
 body{
-    background-color: var(--text);
-    background-image: url(./Images/background_songho_image.png);
+    background-color: #7c5705;
+    background-image: url(./Images/back.png);
     background-size: cover;
 }
 
 .home-logo { 
-    width: 120px;
-    height: 120px; 
-    margin-left: 170px; 
+    width: 100px;
+    height: 100px; 
+    margin-left: 185px; 
+    margin-bottom:10px ;
 }
 
-#accueil{
+#home-screen{
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    gap: 30px;
     text-align: center;
     padding: 40px 20px;
     margin-block: 50px;
-
 }
+
+
  h1 {
   font-family: 'Cinzel', serif;
   font-size: clamp(2.0rem, 8vw, 4.0rem);
@@ -122,27 +128,16 @@ body{
     flex-direction: column;
     gap: 5px;
 }
-input{
-    width: 100%;
-    padding: 10px 15px;
-    border: 2px solid var(--gold);
-    border-radius: 8px;
-    font-size: 16px;
-    outline: none;
-    transition: border-color 0.3s;
-    background-color: var(--border);
-    box-shadow: inset 0 4px 8px rgba(0, 0, 0, 0.25);
-}
-input:focus {
-    border-color: var(--gold-light);   /* bordure verte */
-    box-shadow: 0 0 8px #e8c068;
+
+.main{
+    gap: 20px;
 }
 .header{
     display: flex;
     flex-direction: column;
 }
 
-
+.hidden { display: none !important; }
 
   /*============================================================
                                 GAME-PAGE
@@ -198,29 +193,25 @@ button:hover {
  display: flex;
  align-items: center;
  justify-content: center;
- border: 1px solid blue;
  margin-top: 6rem;
  
 }
-.zone-stat{
-    width: 6rem;
-    border: 1px solid black;
-    height: 20em;
-    margin-block: 1rem;
-}
+
 #plateau{
     border: 1px solid black;
-    height: 20rem;
+    border-radius: 2%;
+    height: 15rem;
     width: 50rem;
     margin:1rem;
     display: flex;
     flex-direction: column;
     gap: 1.4rem;
     padding: 20px;
-    background-color: var(--gold-dim);
+    background-image: url(./Images/background_songho_image.png);
+ 
 }
 
-.North{
+.Zone{
     display: flex;
     align-items: center;
     justify-content: space-around;
@@ -231,10 +222,52 @@ button:hover {
 }
 
 .circle {
-    width: 4.5rem;
-    height: 4.5rem;
+    width: 4.4rem;
+    height: 4.4rem;
     border-radius: 50%;
-    background-color: brown; /* couleur des graines */
-    border: 1px solid black;
+    background-color:var(--border);
+    box-shadow: inset 7px 7px 3px rgba(0, 0, 0, 0.25);
+    border: 3px solid var(--gold-light);
+}
+.zone-stat{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    width: 6rem;
+    border: 3px solid black;
+    height: 20em;
+    margin-block: 1rem;
+    border-radius: 15%;
+    background-image: url(./Images/background_songho_image.png);
+
+}
+.val{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 4rem;
+    height: 4rem;
+    border-radius: 50%;
+    background-color:var(--border);
+    box-shadow: inset 7px 7px 3px rgba(0, 0, 0, 0.25);
+    border: 3px solid var(--gold-light);
+}
+
+
+.z-stat , .z-tour, .z-win{
+    height:30%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: center;
+}
+
+.side-z{
+  font-family: 'Cinzel', serif;
+  font-size: 12px;
+  font-weight: 900;
+  margin-top: 0.5rem;
+  letter-spacing: 0.12rem;
+  text-transform: uppercase; 
 }
 

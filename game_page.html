@@ -7,6 +7,31 @@
     <link rel="stylesheet" href="./songho.css">
 </head>
 <body>
+  <!-- ============================================================
+                                ACCUEIL
+       ============================================================ -->
+    <section id="home-screen">
+        <div class="header">
+            <img src="./Images/Logo2.png" alt="Logo"class="home-logo">
+            <h1 class="game-name">SONGHO</h1>
+            <p class="subtitle">Jeu traditionnel africain de graines à deux joueurs.
+                Capturez les graines de votre adversaire, atteignez 40 graines
+                ou videz le plateau pour gagner.</p>
+        </div>
+        <div class="main">
+            <div id="zone-section">
+                <p>North</p>
+                <p>South</p>
+            </div>
+            <div class="input_zone">
+            <button id="btn-play">Start Game</button>
+            </div>
+        </div>
+    </section>
+  <!-- ============================================================
+                                JEU 
+       ============================================================ -->
+    <div id="game-screen" class="hidden">
     <header>
         <img src="./Images/Logo2.png" alt="Logo"class="home-logo">
         <h1 class="game-name" id="game-h1">SONGHO</h1> 
@@ -19,9 +44,22 @@
     </header>
 
     <main class="table">
-        <div class="zone-stat"></div>
+        <div class="zone-stat">
+           <div class="z-stat">
+                <p class="side-z">Graines</p>
+                <div class="val" id="graines">35</div>
+            </div>
+            <div class="z-tour">
+                <p class="side-z">Tour</p>
+                <div class="val" id="tour">—</div>
+            </div>
+            <div class="z-win">
+                <p class="side-z">Gagner</p>
+                <div class="val" id="win">0</div>
+        </div>
+        </div>
         <div id="plateau">
-            <div class="North">
+            <div class="Zone">
                 <div class="circle"></div>
                 <div class="circle"></div>
                 <div class="circle"></div>
@@ -30,7 +68,7 @@
                 <div class="circle"></div>
                 <div class="circle"></div>
             </div>
-            <div class="North">
+            <div class="Zone">
                 <div class="circle"></div>
                 <div class="circle"></div>
                 <div class="circle"></div>
@@ -40,7 +78,28 @@
                 <div class="circle"></div>
             </div>
         </div>
-        <div class="zone-stat"></div>
+        <div class="zone-stat">
+           <div class="z-stat">
+                <p class="side-z">Graines</p>
+                <div class="val" id="graines">35</div>
+            </div>
+            <div class="z-tour">
+                <p class="side-z">Tour</p>
+                <div class="val" id="tour">—</div>
+            </div>
+            <div class="z-win">
+                <p class="side-z">Gagner</p>
+                <div class="val" id="win">0</div>
+        </div>
     </main>
+    </div>
+
+<script>
+const start = document.getElementById('btn-play');
+start.addEventListener('click', ()=>{
+    document.getElementById('home-screen').classList.add('hidden');
+    document.getElementById('game-screen').classList.remove('hidden');
+});
+</script>
 </body>
 </html>
