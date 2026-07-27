@@ -36,10 +36,10 @@
         <img src="./Images/Logo2.png" alt="Logo"class="home-logo">
         <h1 class="game-name" id="game-h1">SONGHO</h1> 
         <nav>
-            <button>Historic</button>
-            <button>Rules</button>
-            <button>New Game</button>
-            <button>Main Page</button>
+            <button class="nav-btn" id="btn-hist" onclick="toggle('hist')">Historic</button>
+            <button class="nav-btn" id="btn-rules" onclick="toggle('rules')">Rules</button>
+            <button class="nav-btn" id="btn-restart" onclick="restart()">New Game</button>
+           
         </nav>
     </header>
 
@@ -47,19 +47,19 @@
         <div class="zone-stat">
            <div class="z-stat">
                 <p class="side-z">Graines</p>
-                <div class="val" id="graines">35</div>
+                <div class="val" id="graines-north">35</div>
             </div>
             <div class="z-tour">
-                <p class="side-z">Tour</p>
-                <div class="val" id="tour">—</div>
+                <p class="side-z">Score</p>
+                <div class="val" id="score-north">—</div>
             </div>
             <div class="z-win">
                 <p class="side-z">Gagner</p>
-                <div class="val" id="win">0</div>
+                <div class="val" id="win-north">0</div>
         </div>
         </div>
         <div id="plateau">
-            <div class="Zone">
+            <div class="Zone" id="north-zone">
                 <div class="circle"></div>
                 <div class="circle"></div>
                 <div class="circle"></div>
@@ -68,7 +68,7 @@
                 <div class="circle"></div>
                 <div class="circle"></div>
             </div>
-            <div class="Zone">
+            <div class="Zone" id="south-zone">
                 <div class="circle"></div>
                 <div class="circle"></div>
                 <div class="circle"></div>
@@ -78,28 +78,174 @@
                 <div class="circle"></div>
             </div>
         </div>
-        <div class="zone-stat">
+        <div class="zone-stat" id="zone-stat-north">
            <div class="z-stat">
                 <p class="side-z">Graines</p>
-                <div class="val" id="graines">35</div>
+                <div class="val" id="graines-south">35</div>
             </div>
             <div class="z-tour">
-                <p class="side-z">Tour</p>
-                <div class="val" id="tour">—</div>
+                <p class="side-z">Score</p>
+                <div class="val" id="score-south">—</div>
             </div>
             <div class="z-win">
                 <p class="side-z">Gagner</p>
-                <div class="val" id="win">0</div>
+                <div class="val" id="win-south">0</div>
         </div>
     </main>
     </div>
 
+
+  <!-- ============================================================
+                                sidebar
+       ============================================================ -->
+<aside>
+     <!-- ── PANNEAU RÈGLES ──────────────────────────────────── -->
+    <div class="aside-info" id="rules">
+      <h3>Règles du jeu</h3>
+      <p><strong style="color:var(--gold)">Configuration</strong></p>
+      <p>2 rangées de 7 cases, 5 graines par case (70 en tout). Sud joue en premier.</p>
+      <p><strong style="color:var(--gold)">Déroulement</strong></p>
+      <p>Choisissez une case non vide. Les graines sont semées une par une vers la <strong style="color:var(--text)">gauche</strong>, en passant ensuite dans le camp adverse.</p>
+      <p><strong style="color:var(--gold)">Règle du grenier (&gt;13 graines)</strong></p>
+      <ul>
+        <li>Phase 1 : tour complet sans repasser sur la source</li>
+        <li>Phase 2 : le reste tombe uniquement dans le camp adverse</li>
+      </ul>
+      <p><strong style="color:var(--gold)">Captures</strong></p>
+      <p>Si la dernière graine tombe dans le camp adverse sur une case contenant 2, 3 ou 4 graines → capture. La chaîne remonte si les cases précédentes valent aussi 2–4.</p>
+      <p>⚠ Interdit de vider entièrement le camp adverse.</p>
+      <p><strong style="color:var(--gold)">Case maître</strong></p>
+      <p>La première case de chaque camp (marquée d'un bouclier) ne peut jamais être capturée lors d'une prise normale.</p>
+      <p><strong style="color:var(--gold)">Solidarité</strong></p>
+      <p>Camp adverse vide : vous devez lui envoyer des graines. Sinon la partie s'arrête.</p>
+      <p><strong style="color:var(--gold)">Fin de partie</strong></p>
+      <ul>
+        <li>Un joueur atteint 40 graines capturées → victoire</li>
+        <li>Moins de 10 graines sur le plateau → fin</li>
+        <li>Aucun coup légal disponible → fin</li>
+      </ul>
+      <p>Dans les deux derniers cas, chaque joueur récupère les graines de son camp.</p>
+    </div> 
+
+    <!-- ── PANNEAU HISTORIQUE ──────────────────────────────── -->
+    <div class="aside-info" id="hist">
+      <h3>Historique des coups</h3>
+      <div id="hist-list">
+        <p style="color:var(--text-dim);font-size:0.8rem;">Aucun coup joué.</p>
+      </div>
+    </div>
+</aside>
 <script>
 const start = document.getElementById('btn-play');
 start.addEventListener('click', ()=>{
     document.getElementById('home-screen').classList.add('hidden');
     document.getElementById('game-screen').classList.remove('hidden');
 });
+
+function Seeds(count){
+    const cases = document.querySelectorAll('.circle');
+    const max = Math.min(count, 15);
+    cases.forEach(c => {
+        for (let i = 0; i < max; i++) {
+            const graine = document.createElement('div');
+            graine.className = 'seed-dot';
+            c.appendChild(graine);
+        }    
+    });
+    // if(count > 15){
+    //     document.graine.style.width = 
+    // }
+   return cases;
+}
+Seeds(15);
+
+function playable(player){
+    document.querySelectorAll('.circle').forEach(c => {
+        c.classList.remove('playable');
+    });
+    const playZone = document.getElementById(player + '-zone');
+    const casesInZone = playZone.querySelectorAll('.circle');
+
+    casesInZone.forEach((circle, index) => {
+        circle.classList.add('playable');
+        circle.onclick = () => {
+                movement(player,index);
+        }
+    });
+}
+
+// playable('south');
+function movement(player,idx){
+    const state = getstate();
+    if(state.sideplay !== player || state.over)return;
+    playMove(player,idx); //fonction qui regit les regles du jeu
+}
+
+function toggle(action){
+    const aside = document.getElementById(action);
+    const btn = document.getElementById('btn-' + action);
+    const isOpen = aside.classList.contains('open');
+
+    document.querySelectorAll('.aside').forEach(a => a.classList.remove('open'));
+    document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+      if (!isOpen) {
+        aside.classList.add('open');
+        btn.classList.add('active'); 
+      }
+      else{
+        aside.classList.remove('open')
+    }
+}
+/*
+function historique(){
+    const hist = getHistory();
+    const list = document.getElementById('hist-list');
+    if (hist.length === 0) {
+        list.innerHTML = '<p style="color:var(--text-dim);font-size:0.8rem;">Aucun coup joué.</p>';
+        return;
+    }
+    const tour = 0 ;
+    list.innerHTML = hist.map(h=>
+        `<span class = "tour">T${tour+1}</span>
+        <span class ="player-zone">${h.player === 'nord' ? 'Nord' : 'Sud'}</span>`
+
+    )
+}*/
+
+function rendu(){
+    const state  = getState();
+ // Stats Nord
+    document.getElementById('score-north').textContent = state.scores['nord'];
+
+    document.getElementById('graines-north').textContent =
+    state.board['nord'].reduce((acc, v) => acc + v, 0);
+
+    const captureNorth = state.tourCaptures?.['NORD'];
+    document.getElementById('gagner-north').textContent =
+    (captureNorth > 0) ? '+' + captureNorth : '—';
+
+
+ // Stats Sud
+    document.getElementById('score-south').textContent = state.scores['nord'];
+
+    document.getElementById('graines-south').textContent =
+    state.board['nord'].reduce((acc, v) => acc + v, 0);
+
+    const captureSouth = state.tourCaptures?.['SUD'];
+    document.getElementById('gagner-south').textContent =
+    (captureSouth > 0) ? '+' + captureSouth : '—';
+}
+
+function restart() {
+   document.querySelectorAll('.aside-info').forEach(p => p.classList.remove('open'));
+   document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+
+    document.getElementById('home-screen').classList.remove('hidden');
+    document.getElementById('game-screen').classList.add('hidden');
+    initGame();
+    rendu();
+ }
+
 </script>
 </body>
 </html>
