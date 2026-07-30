@@ -44,7 +44,7 @@
     </header>
 
     <main class="table">
-        <div class="zone-stat">
+        <div class="zone-stat"  id="zone-stat-south">
            <div class="z-stat">
                 <p class="side-z">Graines</p>
                 <div class="val" id="graines-north">35</div>
@@ -139,50 +139,16 @@
 
  <script src="songho.js"></script>
 <script>
+
+const rowNord = document.getElementById('north-zone');
+const rowSud = document.getElementById('south-zone');
+
 const start = document.getElementById('btn-play');
 start.addEventListener('click', ()=>{
     document.getElementById('home-screen').classList.add('hidden');
     document.getElementById('game-screen').classList.remove('hidden');
 });
 
-function Seeds(count){
-    const cases = document.querySelectorAll('.circle');
-    const max = Math.min(count, 15);
-    cases.forEach(c => {
-        for (let i = 0; i < max; i++) {
-            const graine = document.createElement('div');
-            graine.className = 'seed-dot';
-            c.appendChild(graine);
-        }    
-    });
-    // if(count > 15){
-    //     document.graine.style.width = 
-    // }
-   return cases;
-}
-Seeds(15);
-
-function playable(player){
-    document.querySelectorAll('.circle').forEach(c => {
-        c.classList.remove('playable');
-    });
-    const playZone = document.getElementById(player + '-zone');
-    const casesInZone = playZone.querySelectorAll('.circle');
-
-    casesInZone.forEach((circle, index) => {
-        circle.classList.add('playable');
-        circle.onclick = () => {
-                movement(player,index);
-        }
-    });
-}
-
-// playable('south');
-function movement(player,idx){
-    const state = getstate();
-    if(state.sideplay !== player || state.over)return;
-    playMove(player,idx); //fonction qui regit les regles du jeu
-}
 
 function toggle(action){
     const aside = document.getElementById(action);
@@ -215,8 +181,64 @@ function historique(){
     )
 }*/
 
+function Seeds( actCircle , count){
+    actCircle.innerHTML = '';
+    const max = Math.min(count, 15);
+        for (let i = 0; i < max; i++) {
+            const graine = document.createElement('div');
+            graine.className = 'seed-dot';
+            actCircle.appendChild(graine);
+        };
+    // if(count > 15){
+    //     document.graine.style.width = 
+    // }
+}
+
+function playable(player,count,index,isPlayable){
+    const cases = document.querySelectorAll('.circle');
+    cases.forEach(c => {
+        if(count > 0) Seeds(c, count);
+        c.classList.remove('playable');
+    });
+    const playZone = document.getElementById(player + '-zone');
+    const casesInZone = playZone.querySelectorAll('.circle');
+
+    casesInZone.forEach((circle, index) => {
+        if(isPlayable){
+            circle.classList.add('playable');
+            circle.onclick = () => {
+                movement(player,index);
+        }
+    }
+    });
+}
+
+// playable('south');
+function movement(player,idx){
+    const state = getState();
+    if(state.current !== player || state.over)return;
+    playMove(idx); //fonction qui regit les regles du jeu
+    rendu();
+}
+
+
 function rendu(){
     const state  = getState();
+    const legaux = state.over ? [] : coupsLegaux(state.current);
+
+    const zonesNord = document.querySelectorAll('#nord-zone .circle');
+    zonesNord.forEach((circle,index)=>{
+        const count = state.board['nord'][index];
+        const isTurn = state.current === 'NORTH';
+        playable('NORTH',count,i,isTurn);
+    })
+
+
+
+for (let i = NB_CASES - 1; i >= 0; i--) {
+    const count = state.board['sud'][i];
+    
+}
  // Stats Nord
     document.getElementById('score-north').textContent = state.scores['nord'];
 
@@ -237,7 +259,13 @@ function rendu(){
     const captureSouth = state.tourCaptures?.['SUD'];
     document.getElementById('gagner-south').textContent =
     (captureSouth > 0) ? '+' + captureSouth : '—';
+
+
+      // Surligner le joueur actif
+    document.getElementById('zone-stat-north').classList.toggle('active', state.current === 'NORTH' && !state.over);
+    document.getElementById('zone-stat-south').classList.toggle('active',  state.current === 'SOUTH'  && !state.over);
 }
+rendu()
 
 function restart() {
    document.querySelectorAll('.aside-info').forEach(p => p.classList.remove('open'));
