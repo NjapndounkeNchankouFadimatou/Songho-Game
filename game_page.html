@@ -44,7 +44,7 @@
     </header>
 
     <main class="table">
-        <div class="zone-stat"  id="zone-stat-south">
+        <div class="zone-stat"  id="zone-stat-south"> <span>NORTH</span>
            <div class="z-stat">
                 <p class="side-z">Graines</p>
                 <div class="val" id="graines-north">35</div>
@@ -78,7 +78,7 @@
                 <div class="circle"></div>
             </div>
         </div>
-        <div class="zone-stat" id="zone-stat-north">
+        <div class="zone-stat" id="zone-stat-north"><span>SOUTH</span>
            <div class="z-stat">
                 <p class="side-z">Graines</p>
                 <div class="val" id="graines-south">35</div>
@@ -149,7 +149,7 @@ start.addEventListener('click', ()=>{
     document.getElementById('game-screen').classList.remove('hidden');
 });
 
-
+openPanel = null;
 function toggle(action){
     const aside = document.getElementById(action);
     const btn = document.getElementById('btn-' + action);
@@ -160,26 +160,32 @@ function toggle(action){
       if (!isOpen) {
         aside.classList.add('open');
         btn.classList.add('active'); 
-      }
-      else{
+        if (action === 'hist'){historique();}
+
+      }else{
         aside.classList.remove('open')
     }
+
 }
-/*
-function historique(){
+
+function historique() {
     const hist = getHistory();
     const list = document.getElementById('hist-list');
+
     if (hist.length === 0) {
-        list.innerHTML = '<p style="color:var(--text-dim);font-size:0.8rem;">Aucun coup joué.</p>';
+        list.innerHTML = '<p>Aucun coup joué.</p>';
         return;
     }
-    const tour = 0 ;
-    list.innerHTML = hist.map(h=>
-        `<span class = "tour">T${tour+1}</span>
-        <span class ="player-zone">${h.player === 'nord' ? 'Nord' : 'Sud'}</span>`
 
-    )
-}*/
+    list.innerHTML = hist.map(function(h) {
+        return '<div class="hist-entry">' +
+               '<span class="tour">T' + h.tour + '</span>' +
+               '<span class="player-zone">' + (h.player === 'nord' ? 'Nord' : 'Sud') + '</span>' +
+               '<span class="hist-case">Case ' + h.case + '</span>' +
+               '<span class="hist-capture">' + (h.captured > 0 ? '+' + h.captured + ' 🌾' : '—') + '</span>' +
+               '</div>';
+    }).join('');
+}
 
 function Seeds( actCircle , count){
     actCircle.innerHTML = '';
@@ -189,31 +195,7 @@ function Seeds( actCircle , count){
             graine.className = 'seed-dot';
             actCircle.appendChild(graine);
         };
-    // if(count > 15){
-    //     document.graine.style.width = 
-    // }
-}
-
-function playable(player,count,index,isPlayable){
-    const cases = document.querySelectorAll('.circle');
-    cases.forEach(c => {
-        if(count > 0) Seeds(c, count);
-        c.classList.remove('playable');
-    });
-    const playZone = document.getElementById(player + '-zone');
-    const casesInZone = playZone.querySelectorAll('.circle');
-
-    casesInZone.forEach((circle, index) => {
-        if(isPlayable){
-            circle.classList.add('playable');
-            circle.onclick = () => {
-                movement(player,index);
-        }
     }
-    });
-}
-
-// playable('south');
 function movement(player,idx){
     const state = getState();
     if(state.current !== player || state.over)return;
@@ -222,50 +204,54 @@ function movement(player,idx){
 }
 
 
-function rendu(){
+function rendu() {
     const state  = getState();
     const legaux = state.over ? [] : coupsLegaux(state.current);
 
-    const zonesNord = document.querySelectorAll('#nord-zone .circle');
-    zonesNord.forEach((circle,index)=>{
-        const count = state.board['nord'][index];
-        const isTurn = state.current === 'NORTH';
-        playable('NORTH',count,i,isTurn);
-    })
+    const zonesNord = document.querySelectorAll('#north-zone .circle');
+    const zonesSud  = document.querySelectorAll('#south-zone .circle');
 
+    zonesNord.forEach(function(circle, index) {
+        const count  = state.board['nord'][index];
+        const playable = state.current === 'nord' && estDansListe(legaux, index);
+        Seeds(circle, count);
+        circle.classList.remove('playable');
+        circle.onclick = null;
+        if (playable) {
+            circle.classList.add('playable');
+            circle.onclick = function() { movement('nord', index); };
+        }
+    });
 
+    zonesSud.forEach(function(circle, index) {
+        const count  = state.board['sud'][index];
+        const playable = state.current === 'sud' && estDansListe(legaux, index);
+        Seeds(circle, count);
+        circle.classList.remove('playable');
+        circle.onclick = null;
+        if (playable) {
+            circle.classList.add('playable');
+            circle.onclick = function() { movement('sud', index); };
+        }
+    });
 
-for (let i = NB_CASES - 1; i >= 0; i--) {
-    const count = state.board['sud'][i];
-    
-}
- // Stats Nord
-    document.getElementById('score-north').textContent = state.scores['nord'];
+    document.getElementById('score-north').textContent  = state.scores['nord'];
+    document.getElementById('score-south').textContent  = state.scores['sud'];
 
     document.getElementById('graines-north').textContent =
-    state.board['nord'].reduce((acc, v) => acc + v, 0);
-
-    const captureNorth = state.tourCaptures?.['NORD'];
-    document.getElementById('gagner-north').textContent =
-    (captureNorth > 0) ? '+' + captureNorth : '—';
-
-
- // Stats Sud
-    document.getElementById('score-south').textContent = state.scores['nord'];
-
+        state.board['nord'].reduce(function(acc, v) { return acc + v; }, 0);
     document.getElementById('graines-south').textContent =
-    state.board['nord'].reduce((acc, v) => acc + v, 0);
+        state.board['sud'].reduce(function(acc, v) { return acc + v; }, 0);
 
-    const captureSouth = state.tourCaptures?.['SUD'];
-    document.getElementById('gagner-south').textContent =
-    (captureSouth > 0) ? '+' + captureSouth : '—';
+    document.getElementById('win-north').textContent =
+        state.tourCaptures['nord'] > 0 ? '+' + state.tourCaptures['nord'] : '—';
+    document.getElementById('win-south').textContent =
+        state.tourCaptures['sud'] > 0 ? '+' + state.tourCaptures['sud'] : '—';
 
-
-      // Surligner le joueur actif
-    document.getElementById('zone-stat-north').classList.toggle('active', state.current === 'NORTH' && !state.over);
-    document.getElementById('zone-stat-south').classList.toggle('active',  state.current === 'SOUTH'  && !state.over);
+    document.getElementById('zone-stat-north').classList.toggle('active', state.current === 'nord' && !state.over);
+    document.getElementById('zone-stat-south').classList.toggle('active', state.current === 'sud'  && !state.over);
 }
-rendu()
+
 
 function restart() {
    document.querySelectorAll('.aside-info').forEach(p => p.classList.remove('open'));
@@ -276,6 +262,13 @@ function restart() {
     initGame();
     rendu();
  }
+
+ start.addEventListener('click', function() {
+    document.getElementById('home-screen').classList.add('hidden');
+    document.getElementById('game-screen').classList.remove('hidden');
+    initGame();
+    rendu(); 
+});
 
 </script>
 </body>

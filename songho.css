@@ -272,11 +272,21 @@ button:hover {
     align-items: center;
 }
 
-.side-z{
+.side-z {
   font-family: 'Cinzel', serif;
   font-size: 12px;
   font-weight: 900;
   margin-top: 0.5rem;
+  letter-spacing: 0.12rem;
+  text-transform: uppercase; 
+}
+
+.zone-stat span{
+   font-family: 'Cinzel', serif;
+  font-size: 12px;
+  font-weight: 900; 
+  margin-top: 0.5rem;
+  margin-left: 15px;
   letter-spacing: 0.12rem;
   text-transform: uppercase; 
 }
@@ -316,15 +326,33 @@ button:hover {
 .circle.playable {
   cursor: pointer;
   border-color: var(--red);
-  border : 4px solid red;
+  border : 4px solid var(--gold);
   box-shadow: 0 0 10px rgba(201,148,42,0.35);
   animation: pulse 1.8s ease-in-out infinite;
 }
 
 
 .circle.playable:hover {
-  transform: translateY(-4px) scale(1.08);
+  transform: translateY(-4px) scale(1.01);
   box-shadow: 0 6px 22px rgba(201,148,42,0.55);
   animation: none;
+}
+
+#hist-list .tour{
+  color: var(--gold);
+  padding-inline: 10px;
+}
+
+#hist-list .player-zone{
+  color: var(--border);
+}
+
+#hist-list .hist-case{
+  color: var(--gold);
+  padding-inline: 10px;
+}
+
+#hist-list .hist-capture {
+  color: var(--border);
 }
 

@@ -37,7 +37,7 @@ function totalAdv(player){
     return gameState.board[player].reduce((acc,val) =>acc +val,0);
 }
 function totalGraines(){
-    return totalAdv(NORTH) = totalAdv(SOUTH);
+    return totalAdv(NORTH) + totalAdv(SOUTH);
 }
 
 function tableSongho(player){
@@ -54,15 +54,16 @@ function BackBoard(songho,player){
 }
 
 function semer(songho,caseJouer){
+    const nouveauSongho = [...songho];
+    const main = nouveauSongho[caseJouer]; // lit d'abord
+    nouveauSongho[caseJouer] = 0; 
     const isGrenier = main > GRENIER;
 
     let caseActuel = caseJouer;
     let reste = main;
     let DerniereJouer = caseJouer;
 
-    const nouveauSongho = [...songho];
-    nouveauSongho[caseJouer] = 0;
-    const main = nouveauSongho[caseJouer];
+
 
     const prev = (i) => (i - 1 + 14) % 14;
     if(isGrenier){
@@ -91,7 +92,7 @@ function semer(songho,caseJouer){
             DerniereJouer = caseActuel
         }
     }
-    return {nouveauSongho ,DerniereJouer,isGrenier}
+    return { songho: nouveauSongho, lastCase: DerniereJouer, isGrenier }
 }
 
 function prises(songho, lastCase, player, isGrenier){
@@ -110,7 +111,7 @@ function prises(songho, lastCase, player, isGrenier){
         } 
     } 
 
-    const prendreGraines = (caseActuel) => [2, 3, 4].includes(songho[current]);
+    const prendreGraines = (caseActuel) => [2, 3, 4].includes(songho[caseActuel]);
     const firstAdv = 7;
     if(!prendreGraines(lastCase)) return {songho ,captured};
     if(lastCase === firstAdv) return {songho ,captured};
@@ -118,7 +119,7 @@ function prises(songho, lastCase, player, isGrenier){
     //simulation d'une prise pour eviter les erreurs
     const simul = [...songho];
     simul[lastCase] = 0;
-    let enChaine = lastCase + 1;
+    let enChaine = lastCase - 1;
     while(enChaine >= firstAdv && prendreGraines(simul[enChaine])){
         simul[enChaine] = 0;
         enChaine--;
@@ -138,11 +139,18 @@ function prises(songho, lastCase, player, isGrenier){
     }
     return {songho,captured};
 
+}function estDansListe(liste, valeur) {
+    for (let i = 0; i < liste.length; i++) {
+        if (liste[i] === valeur) {
+            return true;
+        }
+    }
+    return false;
 }
 
 function coupsLegaux(player) {
   const adv    = advert(player);
-  const adVide = totalAdv(ad) === 0;
+  const adVide = totalAdv(adv) === 0;
   const coups   = [];
   for (let i = 0; i < NB_CASES; i++) {
     if (gameState.board[player][i] === 0) continue;
@@ -173,10 +181,11 @@ function Nourir(player){
     return false;
 }
 
+
 function checkEndGame() {
-  if (gameState.scores[NORD] >= SEUIL_WIN) { endGame('score', NORD); return true; }
-  if (gameState.scores[SUD]  >= SEUIL_WIN) { endGame('score', SUD);  return true; }
-  if (totalmain() < SEUIL_FIN)             { endGame('peu_main');     return true; }
+if (gameState.scores[NORTH] >= SEUIL_WIN){ GameWin('score', NORTH); return true; }
+if (gameState.scores[SOUTH] >= SEUIL_WIN){ GameWin('score', SOUTH); return true; }
+if (totalGraines() < SEUIL_FIN){ GameWin('peu_graines');   return true; }
   return false;
 }
 
@@ -212,7 +221,7 @@ function GameWin(raison, player = null) {
     }
     else if(pScore >= SEUIL_WIN || pAdv >= SEUIL_WIN){
         gameState.board[NORTH].fill(0);
-        gameState.board[SUD].fill(0);
+        gameState.board[SOUTH].fill(0);
 
         gameState.over = true;
 
@@ -226,57 +235,59 @@ function GameWin(raison, player = null) {
       return null;
     }
 }
-function playMove(caseActuel){
+function playMove(caseActuel) {
     if (gameState.over) {
         gameState.message = 'La partie est déjà terminée.';
         return gameState;
     }
 
     const player = gameState.current;
-    const adv = advert(player);
-
-
+    const adv    = advert(player);
     const legaux = coupsLegaux(player);
-    if (!legaux.includes(caseActuel)) {
-        gameState.message = `Coup illégal (case ${casecurrent + 1}).`;
+
+    if (!estDansListe(legaux, caseActuel)) {
+        gameState.message = 'Coup illégal (case ' + (caseActuel + 1) + ').';
         return gameState;
     }
-    let songho = tableSongho(player);
-    const { songho: afterTable, lastCase, isGrenier } = semer([...songho], caseActuel);
-    const { songho: finalTableau, captured } = prises(afterTable, lastCase, player, isGrenier);
 
-    const newBoards = BackBoard(linFinal, player);
+    const songho   = tableSongho(player);
+    const semaille = semer([...songho], caseActuel);
+    const prise    = prises(semaille.songho, semaille.lastCase, player, semaille.isGrenier);
+
+    const newBoards         = BackBoard(prise.songho, player);
     gameState.board[player] = newBoards[player];
-    gameState.board[ad]    = newBoards[ad];
+    gameState.board[adv]    = newBoards[adv];
 
-    gameState.scores[player]      += captured;
-    gameState.tourCaptures[player] = captured;
-    gameState.tourCaptures[ad]    = 0;
+    gameState.scores[player]       = gameState.scores[player] + prise.captured;
+    gameState.tourCaptures[player] = prise.captured;
+    gameState.tourCaptures[adv]    = 0;
 
-    gameState.message = `${player} joue case ${caseActuel + 1}. Capture : ${captured} graine(s).`;
+    gameState.message = player + ' joue case ' + (caseActuel + 1) + '. Capture : ' + prise.captured + ' graine(s).';
+
     history.push({
-    tour:    gameState.tour,
-    player,
-    case:    caseActuel + 1,
-    captured,
-  });
+        tour:     gameState.tour,
+        player:   player,
+        case:     caseActuel + 1,
+        captured: prise.captured,
+    });
 
-    // Vérification fin de partie originale (inchangée)
     if (checkEndGame()) return gameState;
 
     gameState.current = adv;
-    gameState.tour++;
+    gameState.tour    = gameState.tour + 1;
 
-    if (totalAdv(ad) === 0 && !Nourir(gameState.current)) {
-        endGame('nourrir');
+    if (totalAdv(adv) === 0 && !Nourir(gameState.current)) {
+        GameWin('nourrir');
         return gameState;
     }
 
     if (coupsLegaux(gameState.current).length === 0) {
-        endGame('aucun_coup');
+        GameWin('aucun_coup');
         return gameState;
     }
-    return;
+
+    gameState.message = gameState.message + ' Au tour de ' + gameState.current + '.';
+    return gameState;
 }
 
 
